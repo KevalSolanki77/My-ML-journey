@@ -1,4 +1,4 @@
-
+----
 
 # `Scaling`
 
@@ -12,6 +12,8 @@
 | Linear/Logistic Regression                                | StandardScaler         |
 | Presence of many outliers                                 | RobustScaler           |
 | Tree-based models (Random Forest, XGBoost, Decision Tree) | No scaling needed      |
+
+---
 
 # `Skewness`
 
