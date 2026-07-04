@@ -266,7 +266,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 - **Feature scaling also affects the condition number** — standardizing the features with `StandardScaler` dropped the condition number significantly, even independent of the multicollinearity fixes, since unscaled features with very different ranges also inflate the condition number.
 - Comparing MSE before and after fixing multicollinearity + scaling confirmed the fix: prediction error dropped, showing that resolving multicollinearity doesn't just help interpretability, it can improve actual model performance too.
 
-**Code:** [condition_number_VIF.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-15-Condition-Number-VIF/condition_number_VIF.ipynb)
+**Code:** [condition_number_VIF.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-15-Condition-Numbers/condition_number_VIF.ipynb)
 
 
 ---
