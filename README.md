@@ -142,7 +142,17 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 
 ### Day 7: Feature Scaling
 **What I learned:**
-- 
+- Feature scaling matters because features on different ranges (like height in cm vs weight in kg) can bias models that rely on distance or gradients — the feature with a bigger range ends up dominating.
+- There are mainly two types of scaling: `Standardization` and `Normalization`.
+- `StandardScaler()` performs standardization — it transforms data to have mean `0` and standard deviation `1` using the formula `(x - mean) / std`. It doesn't bound values to a fixed range, so outliers can still stretch the distribution.
+- `MinMaxScaler()` performs normalization — it squeezes all values into a fixed `[0, 1]` range using `(x - min) / (max - min)`. This is useful when you need bounded values, but it's very sensitive to outliers since a single extreme value shifts the entire scale.
+- `RobustScaler()` is built for data with outliers. Instead of mean/std or min/max, it scales using the median and IQR (Interquartile Range): `(x - median) / IQR`. Since median and IQR aren't pulled by extreme values the way mean and range are, the scaled distribution stays stable even with outliers present.
+- `MaxAbsScaler()` scales data by dividing by the maximum absolute value, so everything lands in `[-1, 1]`. It doesn't shift/center the data (no subtraction), so it preserves sparsity — this is useful for sparse data where you don't want to disturb the zero entries.
+- Choosing a scaler depends on the data: use `StandardScaler` when data is roughly normal, `MinMaxScaler` when you need a strict bounded range and there are no major outliers, `RobustScaler` when outliers are present, and `MaxAbsScaler` when working with sparse data.
+- Visualizing the same feature's distribution before and after scaling (using `histplot` with KDE) helps confirm that scaling changes the *scale* of the data but not its underlying *shape*.
+
+
+**Code:** [feature_scaling.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-07-Feature-scaling/feature_scaling.ipynb)
 
 ---
 
