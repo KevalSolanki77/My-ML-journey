@@ -87,7 +87,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 - Visualizing relationships with `seaborn.scatterplot()`
 - Quickly testing whether a feature has predictive value by fitting a baseline `RandomForestRegressor` and checking `.score()`
 
-**Code:** [data_collection.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-03-Data_Collection/data_collections.ipynb)
+**Code:** [data_collection.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-03-Data-Collection/data_collections.ipynb)
 
 ---
 
