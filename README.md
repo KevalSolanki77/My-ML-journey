@@ -123,7 +123,20 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 
 ### Day 6: Encoding
 **What I learned:**
-- 
+- For input Features There are two types of Categorial Data: 1) `Ordinal` 2) `Nominal` 
+- `Ordinal` means there is a Natural Order of categories and `Nominal` means there is no order all the values are treated equally.
+- Based on these categories There are two Types of Encoders
+  1. `OrdinalEncoder()` - for `Ordinal` Categories
+  2. `OneHotEncoder()` - for `Nominal` Categories
+- In `OrdinalEncoder()` you define the order using `categories=` parameter. By default it will assign the value starting from `0...n`. `0` means lowest and `n` means Highest order.
+- By doing this Model will give more value to the higher order and make more precise predictions.
+- In `OneHotEncoder()` we'll create a new column for every category and set the value `0` or `1`.
+- But problem with `OneHotEncoder()` is that if we create column for every category that make aa those columns very Highly Correlated because sum of those encoded columns will be 1 because there is 1 category per row. To solve these there is a parameter called `drop` we can set the value to `first` that will drop the first column from encoded column the encoded columns.
+- We can also achieve same outputs by using `pandas.get_dummies()`.
+- For Target features we have `LabelEncoder()` that encodes the target features.
+
+**Code:** [encoding.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-06-Encoding/encoding.ipynb)
+
 
 ---
 
