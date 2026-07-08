@@ -268,6 +268,20 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 
 **Code:** [condition_number_VIF.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-15-Condition-Numbers/condition_number_VIF.ipynb)
 
+---
+
+### Day 16: Ridge Regression (from scratch)
+**What I learned:**
+- Ridge Regression is Linear Regression with an added **L2 penalty** on the coefficients — it shrinks large coefficients toward zero, which helps control overfitting and multicollinearity (ties back to Day 15's VIF/condition number problem) at the cost of a little bias.
+- The penalty is controlled by `alpha`: higher `alpha` means stronger shrinkage (simpler, more biased model), `alpha=0` reduces Ridge back to plain OLS Linear Regression.
+- **Simple Ridge (1 feature)** has a closed-form update almost identical to OLS's slope formula, except `alpha` is added directly to the denominator: `slope = Σ((y - ȳ)(x - x̄)) / (Σ(x - x̄)² + alpha)`. Adding `alpha` here is literally what shrinks the slope compared to plain OLS.
+- **Multiple Ridge** generalizes this into matrix form: `β = (XᵀX + αI)⁻¹ Xᵀy` — the identity matrix `I` scaled by `alpha` is added to `XᵀX` before inverting. This is the direct multivariate version of the same shrinkage idea, and it's also *why* Ridge fixes multicollinearity: adding `αI` makes `XᵀX` numerically more invertible (better-conditioned) even when features are highly correlated.
+- As before, a column of 1s is inserted into `X` to handle the intercept, and the intercept is excluded from the penalty by only regularizing the coefficient terms — done here by including it in `I` but recovering `betas[0]` separately as the unpenalized intercept.
+- **Gradient Descent version:** instead of solving the matrix equation directly, the gradient of the Ridge loss is derived and used iteratively: `gradient = XᵀXβ - Xᵀy + αβ`, then `β = β - learning_rate * gradient`. This is the same OLS gradient from Day 13 with one extra `+ αβ` term — that extra term is what pulls the coefficients toward zero each step.
+- Validated all three custom implementations (closed-form simple, closed-form multiple, gradient descent) against `sklearn`'s `Ridge` and `SGDRegressor(penalty='l2')` using R² score on the same synthetic data, confirming the math matches sklearn's actual behavior.
+
+**Code:** [MyRidgeRegressor.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-16-Ridge-Regressor/MyRidgeRegressor.ipynb)
+
 
 ---
 
