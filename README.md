@@ -26,6 +26,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 13 | Gradient Descent | ✅ |
 | 14 | Polynomial Regression | ✅ |
 | 15 | Condition Number & VIF | ✅ |
+| 16 | Ridge Regressor | ✅ |
 
 ## 📖 Daily Logs
 
