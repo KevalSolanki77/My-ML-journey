@@ -3,8 +3,8 @@
 Documenting my day-by-day progress as I learn ML — concepts, code, and mistakes along the way.
 
 ## 📌 About
-- **Goal:** [e.g. Build a strong foundation in ML and land an ML role]
-- **Started:** [Date]
+- **Goal:** Understand Core ML
+- **Started:** 21-06-2026
 - **Focus areas:** Data preprocessing, ML algorithms, math foundations
 
 ## 🗂️ Progress Tracker
