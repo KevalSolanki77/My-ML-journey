@@ -282,11 +282,32 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 
 **Code:** [MyRidgeRegressor.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-16-Ridge-Regressor/MyRidgeRegressor.ipynb)
 
+---
+
+### Day 17: Lasso Regression 
+**What I learned:**
+- Both Ridge and Lasso add a penalty term to the plain OLS loss to shrink coefficients and reduce overfitting, but they differ in *which norm* they penalize:
+  - **Ridge (L2):** `Loss = Σ(y - ŷ)² + α Σβᵢ²` — penalizes the *squared* value of coefficients.
+  - **Lasso (L1):** `Loss = Σ(y - ŷ)² + α Σ|βᵢ|` — penalizes the *absolute* value of coefficients.
+- This difference in geometry is what changes their behavior: Ridge's squared penalty shrinks coefficients smoothly toward zero but rarely makes them exactly zero. Lasso's absolute-value penalty has a sharp corner at zero, which means the optimization can actually push weak coefficients to *exactly* zero, not just close to it.
+- This is why **Lasso does automatic feature selection** and Ridge doesn't — Lasso effectively removes irrelevant/less useful features from the model by zeroing out their coefficients entirely, while Ridge keeps all features but just dampens their weights.
+- Because of this, Ridge tends to be preferred when most features are genuinely useful and just need stabilizing (e.g. under multicollinearity), while Lasso is preferred when you suspect only a subset of features actually matter and want a sparser, more interpretable model.
+- Ridge has a closed-form solution (`β = (XᵀX + αI)⁻¹Xᵀy`) because the squared penalty keeps the loss differentiable everywhere. Lasso's `|βᵢ|` term isn't differentiable at zero, so it has no clean closed-form solution — it's solved using iterative optimization methods instead (e.g. coordinate descent, which is what `sklearn`'s `Lasso` uses under the hood).
+- Both still share the same `alpha` intuition: `alpha=0` reduces either one back to plain Linear Regression, and increasing `alpha` increases the strength of shrinkage — for Lasso specifically, a high enough `alpha` can zero out most or all coefficients.
+- Since Lasso already performs feature selection through regularization, there's no need to separately do manual feature selection or dimensionality reduction (like `VIF` filtering or `PCA`) before feeding it all the features.
+
+**Code:** [Lasso_Regressor.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-17-Lasso-Regressor/Lasso_Regressor.ipynb)
 
 ---
 
 ## 🛠️ Tech Stack
-`Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn`
+`Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute`
+
+## Install Dependency 
+
+```bash
+pip install numpy pandas matplotlib seaborn scikit-learn pyampute
+```
 
 ## License 
 [MIT License](https://github.com/KevalSolanki77/My-ML-journey/blob/main/LICENSE)
