@@ -27,6 +27,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 14 | Polynomial Regression | ✅ |
 | 15 | Condition Number & VIF | ✅ |
 | 16 | Ridge Regressor | ✅ |
+| 17 | Lasso And ElasticNet Regressor | ✅ |
 
 ## 📖 Daily Logs
 
@@ -296,8 +297,16 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 - Ridge has a closed-form solution (`β = (XᵀX + αI)⁻¹Xᵀy`) because the squared penalty keeps the loss differentiable everywhere. Lasso's `|βᵢ|` term isn't differentiable at zero, so it has no clean closed-form solution — it's solved using iterative optimization methods instead (e.g. coordinate descent, which is what `sklearn`'s `Lasso` uses under the hood).
 - Both still share the same `alpha` intuition: `alpha=0` reduces either one back to plain Linear Regression, and increasing `alpha` increases the strength of shrinkage — for Lasso specifically, a high enough `alpha` can zero out most or all coefficients.
 - Since Lasso already performs feature selection through regularization, there's no need to separately do manual feature selection or dimensionality reduction (like `VIF` filtering or `PCA`) before feeding it all the features.
+- ElasticNet combines both Ridge (L2) and Lasso (L1) penalties into a single loss function instead of picking one: `Loss = Σ(y - ŷ)² + α [ r·Σ|βᵢ| + (1-r)·Σβᵢ² ]`, where `r` (the `l1_ratio` in `sklearn`) controls the mix between the two.
+- `l1_ratio = 1` makes ElasticNet behave exactly like Lasso (pure L1), `l1_ratio = 0` makes it behave exactly like Ridge (pure L2), and anything in between blends both effects.
+- The motivation for this blend: Lasso's feature selection (zeroing out coefficients) becomes unstable when features are highly correlated — it tends to arbitrarily pick one feature from a correlated group and zero out the rest, which can vary a lot between runs. Ridge doesn't have this instability since it never zeroes anything out, but it also can't do feature selection.
+- ElasticNet gets the best of both: it can still zero out genuinely useless features (like Lasso), while the added L2 term stabilizes coefficient selection among correlated features (like Ridge) instead of arbitrarily dropping one.
+- This makes ElasticNet a good default choice when you have many features and suspect both irrelevant features *and* multicollinearity are present — situations where either pure Ridge or pure Lasso alone isn't ideal.
+- ElasticNet has two hyperparameters to tune instead of one (`alpha` for overall penalty strength, `l1_ratio` for the L1/L2 mix), so it needs a slightly larger `GridSearchCV`/`RandomizedSearchCV` space to tune properly compared to Ridge or Lasso alone.
+- Comparing Lasso vs ElasticNet on the same pipeline/data (same R² scoring) shows directly whether the correlated features in this dataset benefit from ElasticNet's stability, or whether Lasso's pure feature selection was already sufficient.
 
-**Code:** [Lasso_Regressor.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-17-Lasso-Regressor/Lasso_Regressor.ipynb)
+
+**Code:** [Lasso_ElasticNet_Regressor.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-17-Lasso-and-ElasticNet-Regressor/Lasso_ElasticNet_Regressor.ipynb)
 
 ---
 
