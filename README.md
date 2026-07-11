@@ -310,6 +310,21 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 
 ---
 
+### Day 18: Logistic Regression using Perceptron
+**What I learned:**
+- Logistic Regression can be understood through the **Perceptron Trick**, a simpler geometric way to find a separating line for binary classification, before ever touching the sigmoid function.
+- The Perceptron uses a `step` function (outputs 1 if the weighted sum ≥ 0, else 0) instead of a smooth probability curve — this makes it a hard classifier, not a probabilistic one, and it's a key difference from sklearn's actual `LogisticRegression`.
+- The update rule only fires when the prediction is wrong: `weights += learning_rate * (y_actual - y_pred) * X[idx]`. If the prediction is correct, `(y_actual - y_pred) = 0` and nothing changes — the line only moves to fix misclassified points.
+- This update is done **one random point at a time** (like SGD from Day 13), not on the whole dataset — the decision boundary shifts incrementally with each misclassified example it encounters.
+- As before, a column of 1s is inserted into `X` so the intercept (bias) is learned as just another weight, then separated out afterward into `coef_` and `intercept_`.
+- The learned weights directly define the decision boundary line: converting `weights` into slope/intercept form (`m = -w[1]/w[2]`, `b = -w[0]/w[2]`) lets you plot exactly where the Perceptron decided to split the two classes, and compare it visually against sklearn's line.
+- Comparing accuracy against `sklearn`'s `LogisticRegression` showed the Perceptron trick converges to a noticeably worse-fitting line even after 1000 epochs — this is the core limitation of the Perceptron: it only guarantees convergence on data that's perfectly linearly separable, and even then, it doesn't optimize for the *best* boundary, just *any* boundary with zero training error at that random-sampling moment, unlike sigmoid-based Logistic Regression which optimizes a proper loss function (log loss) toward a probabilistic best fit.
+- Animated the decision boundary shifting across epochs (`FuncAnimation`) to visualize how the Perceptron's line moves step-by-step as it processes misclassified points, rather than jumping straight to a final answer.
+
+**Code:** [Logistic_Regression_using_Perceptron.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-18-Logistic-Regression-using-Perceptron/Logistic_Regression_using_Perceptron.ipynb)
+
+---
+
 ## 🛠️ Tech Stack
 `Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute`
 
