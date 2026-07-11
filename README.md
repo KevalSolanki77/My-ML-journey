@@ -28,6 +28,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 15 | Condition Number & VIF | ✅ |
 | 16 | Ridge Regressor | ✅ |
 | 17 | Lasso And ElasticNet Regressor | ✅ |
+| 17 | Logistic Regression using Perceptron | ✅ |
 
 ## 📖 Daily Logs
 
