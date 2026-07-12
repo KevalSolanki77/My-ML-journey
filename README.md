@@ -29,6 +29,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 16 | Ridge Regressor | ✅ |
 | 17 | Lasso And ElasticNet Regressor | ✅ |
 | 17 | Logistic Regression using Perceptron | ✅ |
+| 17 | Logistic Regression using Sigmoid Function | ✅ |
 
 ## 📖 Daily Logs
 
@@ -323,6 +324,19 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 - Animated the decision boundary shifting across epochs (`FuncAnimation`) to visualize how the Perceptron's line moves step-by-step as it processes misclassified points, rather than jumping straight to a final answer.
 
 **Code:** [Logistic_Regression_using_Perceptron.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-18-Logistic-Regression-using-Perceptron/Logistic_Regression_using_Perceptron.ipynb)
+
+---
+
+### Day 19: Logistic Regression using Sigmoid Function
+**What I learned:**
+- This builds directly on Day 18's Perceptron approach — same structure, same weight update loop, but swaps the **hard `step` function** for the **`sigmoid` function**, and that one change is the real upgrade.
+- The Perceptron's `step` function only outputs a hard 0 or 1, so the update `(y_actual - y_pred)` is always a whole number jump — there's no notion of "how confident" or "how wrong" a prediction was. Sigmoid outputs a smooth probability between 0 and 1, so the same update rule now reflects *how far off* the prediction was, not just *whether* it was right or wrong.
+- Because of this, the Sigmoid version's weight updates are more gradual and informative — each misclassified (or barely-correct) point nudges the weights proportionally to the error size, rather than the same fixed-magnitude correction the Perceptron used regardless of how close the point was to the boundary.
+- This is essentially what makes it real Logistic Regression instead of a Perceptron: sigmoid-based updates are approximating gradient descent on **log loss**, a proper probabilistic loss function — the Perceptron has no equivalent underlying loss it's minimizing, it just reacts to misclassifications.
+- Comparing all three decision boundaries on the same plot (Perceptron / Sigmoid-from-scratch / sklearn's `LogisticRegression`) showed the improvement directly: the Sigmoid version's boundary sits noticeably closer to sklearn's actual line than the Perceptron's did on Day 18 — confirming that switching the activation function alone measurably improves how closely the from-scratch model matches a real probabilistic classifier.
+- It's still not a perfect match to sklearn, since this implementation updates on **one random row per epoch** (like SGD) rather than using the full batch gradient of log loss the way sklearn's solver does — so the remaining gap is about optimization method, not the choice of activation function anymore.
+
+**Code:** [Logistic_Regression_using_Perceptron.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-19-Logistic-Regression-using-Sigmoid-Fucntion/Logistic_Regression_using_Sigmoid_Function.ipynb)
 
 ---
 
