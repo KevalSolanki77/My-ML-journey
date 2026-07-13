@@ -30,6 +30,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 17 | Lasso And ElasticNet Regressor | ✅ |
 | 17 | Logistic Regression using Perceptron | ✅ |
 | 17 | Logistic Regression using Sigmoid Function | ✅ |
+| 17 | Logistic Regression using Gradient Descent | ✅ |
 
 ## 📖 Daily Logs
 
@@ -337,6 +338,20 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 - It's still not a perfect match to sklearn, since this implementation updates on **one random row per epoch** (like SGD) rather than using the full batch gradient of log loss the way sklearn's solver does — so the remaining gap is about optimization method, not the choice of activation function anymore.
 
 **Code:** [Logistic_Regression_using_Perceptron.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-19-Logistic-Regression-using-Sigmoid-Fucntion/Logistic_Regression_using_Sigmoid_Function.ipynb)
+
+---
+
+### Day 20: Logistic Regression using Gradient Descent (Log-Loss)
+**What I learned:**
+- This closes the gap left from Day 19: instead of updating weights on **one random row at a time** (SGD-style), this version computes the gradient over the **entire training set** at once per epoch — proper Batch Gradient Descent on log loss.
+- The update rule shifts from a single-row error term to an averaged error across all rows: `weights += learning_rate * (Xᵀ(y - y_pred)) / n`, dividing by `X.shape[0]` so the step size doesn't blow up as dataset size grows.
+- This is the direct gradient of the **log-loss (binary cross-entropy)** function — while Day 19's sigmoid-based Perceptron-style update was *inspired by* log loss, this version is the actual textbook gradient descent derivation of it, applied in full-batch form.
+- Because it uses the true averaged gradient instead of one noisy row, the resulting decision boundary is far more stable and consistent between runs than both Day 18 (Perceptron) and Day 19 (single-row Sigmoid).
+- Comparing all four lines on one plot (Perceptron / single-row Sigmoid / batch GD / sklearn's `LogisticRegression`) made the improvement obvious: the batch GD line now overlaps almost exactly with sklearn's fitted line, while Day 18 and 19's lines still visibly diverge from it.
+- This mirrors the exact same Day 12 → Day 13 progression from Linear Regression (closed-form OLS → iterative Gradient Descent) — except here there's no closed-form solution for log loss, so gradient descent isn't just an alternative, it's the standard way Logistic Regression is actually solved.
+- Used `LogisticRegression(solver='sag')` for the sklearn comparison specifically because `sag` is itself a gradient-based solver, making it a fairer apples-to-apples comparison against this from-scratch batch GD implementation than sklearn's default solver would be.
+
+**Code:** [Logistic_regression_using_GD.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-20-Logistic-Regression-using-Gradient-Descent/logistic_regression_using_GD.ipynb)
 
 ---
 
