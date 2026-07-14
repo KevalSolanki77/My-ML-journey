@@ -289,7 +289,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 
 ---
 
-### Day 17: Lasso Regression 
+### Day 17: Lasso and ElasticNet Regression 
 **What I learned:**
 - Both Ridge and Lasso add a penalty term to the plain OLS loss to shrink coefficients and reduce overfitting, but they differ in *which norm* they penalize:
   - **Ridge (L2):** `Loss = Σ(y - ŷ)² + α Σβᵢ²` — penalizes the *squared* value of coefficients.
@@ -352,6 +352,24 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 - Used `LogisticRegression(solver='sag')` for the sklearn comparison specifically because `sag` is itself a gradient-based solver, making it a fairer apples-to-apples comparison against this from-scratch batch GD implementation than sklearn's default solver would be.
 
 **Code:** [Logistic_regression_using_GD.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-20-Logistic-Regression-using-Gradient-Descent/logistic_regression_using_GD.ipynb)
+
+---
+
+### Day 21: Classification Metrics
+**What I learned:**
+- **Accuracy** (`(TP+TN) / Total`) is the simplest metric, but it doesn't tell you *what kind* of mistake the model is making two models with identical accuracy could be failing in completely different ways.
+- **Confusion Matrix** breaks predictions into 4 buckets: `TP`, `TN`, `FP` (Type 1 error — predicted positive, actually negative), and `FN` (Type 2 error — predicted negative, actually positive). Accuracy itself can be recomputed directly from these 4 numbers, which is a good way to verify you understand what accuracy is actually built from.
+- **Precision** (`TP / (TP+FP)`) matters when a **False Positive** is the costly mistake. E.g. spam detection, where wrongly flagging a real email as spam (FP) is worse than letting a spam email through.
+- **Recall** (`TP / (TP+FN)`) matters when a **False Negative** is the costly mistake. E.g. cancer detection, where missing an actual positive case (FN) is far worse than a false alarm.
+- **F1 Score** is the harmonic mean of Precision and Recall, used when both error types matter roughly equally (e.g. churn prediction). Unlike a normal average, the harmonic mean punishes imbalance between the two if one is very low, F1 stays low even if the other is high, instead of just averaging them out.
+- For **multi-class problems**, precision/recall/F1 first get computed *per class*, then combined using one of four strategies:
+  - **Micro:** pools all TP/FP/FN across classes before computing one score this collapses to being mathematically identical to accuracy in standard single-label multi-class problems, so it reflects overall correctness but not per-class quality.
+  - **Macro:** simple unweighted mean of per-class scores — treats every class equally regardless of size, which best exposes poor performance on rare classes.
+  - **Weighted:** same as macro but weighted by each class's support (sample count) balances out class imbalance without collapsing to accuracy like micro does.
+  - **Samples:** only valid for multilabel problems (each sample can have multiple true labels) computed per sample across its own label set, then averaged; doesn't make sense for standard multi-class where each sample has just one label.
+- Choosing which average to report isn't a technicality on an imbalanced dataset, macro can reveal a model completely failing a minority class even while accuracy and micro-F1 look fine.
+
+**Code:** [Classification_Matrices.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-21-Classification-Matrices/classification_matrices.ipynb)
 
 ---
 
