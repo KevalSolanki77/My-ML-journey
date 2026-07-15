@@ -373,13 +373,28 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 
 ---
 
+### Day 22: ROC Curve & AUC
+**What I learned:**
+- **True Positive Rate (TPR)**, also called the model's *Benefit*, is `TP / (TP + FN)` — out of all actual positives, how many did the model correctly catch. You want this as close to 1 as possible.
+- **False Positive Rate (FPR)**, also called the model's *Cost*, is `FP / (FP + TN)` — out of all actual negatives, how many did the model wrongly flag as positive. You want this as close to 0 as possible.
+- Framing these as "Benefit" and "Cost" makes the tradeoff intuitive: every classification model is balancing how much benefit (catching real positives) it gets against how much cost (false alarms) it's willing to pay for it.
+- Classifiers don't just output 0/1 they output a probability, and a **threshold** decides where that probability gets cut into a class. The default is 0.5, but shifting it (e.g. to 0.75) changes both TPR and FPR simultaneously raise the threshold and FPR drops (fewer false alarms) but TPR also drops (missing more real positives), it's a direct tradeoff, not a free lunch.
+- The **ROC Curve** plots TPR vs. FPR across *every possible threshold*, which turns "what's the best threshold?" from a guess into something you can read off a graph the best point is wherever TPR is high and FPR is low simultaneously (closest to the top-left corner).
+- **AUC (Area Under the Curve)** condenses that entire curve into one number summarizing overall model performance *independent of any single threshold choice*. A random/no-skill classifier has AUC = 0.5 (the diagonal line), and higher AUC means the model separates the two classes better across all thresholds.
+- Because AUC isn't tied to one threshold, it's a fairer way to **compare two different models** than accuracy at a single cutoff used here to compare Logistic Regression vs. SVM on the same data, where the model with the higher AUC is the stronger classifier overall, before any threshold has even been chosen.
+- SVM needed feature scaling (`StandardScaler`) before training, while Logistic Regression didn't need it for this comparison a reminder that different algorithms have different sensitivities to feature scale, tying back to Day 7.
+
+**Code:** [roc_auc.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-22-ROC-AUC/roc_auc.ipynb)
+
+---
+
 ## 🛠️ Tech Stack
-`Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute`
+`Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute` `Plotly`
 
 ## Install Dependency 
 
 ```bash
-pip install numpy pandas matplotlib seaborn scikit-learn pyampute
+pip install numpy pandas matplotlib seaborn scikit-learn pyampute plotly
 ```
 
 ## License 
