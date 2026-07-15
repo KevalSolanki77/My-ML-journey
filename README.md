@@ -28,9 +28,11 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 15 | Condition Number & VIF | ✅ |
 | 16 | Ridge Regressor | ✅ |
 | 17 | Lasso And ElasticNet Regressor | ✅ |
-| 17 | Logistic Regression using Perceptron | ✅ |
-| 17 | Logistic Regression using Sigmoid Function | ✅ |
-| 17 | Logistic Regression using Gradient Descent | ✅ |
+| 18 | Logistic Regression using Perceptron | ✅ |
+| 19 | Logistic Regression using Sigmoid Function | ✅ |
+| 20 | Logistic Regression using Gradient Descent | ✅ |
+| 21 | Classification Matrices (Accuracy/Confusion Matrix/Precision/Recall/F1) | ✅ |
+| 22 | ROC Curve - AUC | ✅ |
 
 ## 📖 Daily Logs
 
