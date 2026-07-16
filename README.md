@@ -33,6 +33,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 20 | Logistic Regression using Gradient Descent | ✅ |
 | 21 | Classification Matrices (Accuracy/Confusion Matrix/Precision/Recall/F1) | ✅ |
 | 22 | ROC Curve - AUC | ✅ |
+| 22 | Softmax Regression/Multinomial Logistic Regression | ✅ |
 
 ## 📖 Daily Logs
 
@@ -387,6 +388,21 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 - SVM needed feature scaling (`StandardScaler`) before training, while Logistic Regression didn't need it for this comparison a reminder that different algorithms have different sensitivities to feature scale, tying back to Day 7.
 
 **Code:** [roc_auc.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-22-ROC-AUC/roc_auc.ipynb)
+
+---
+
+### Day 23: Softmax Regression (Multiclass Logistic Regression)
+**What I learned:**
+- Sigmoid-based Logistic Regression (Days 19-20) only works for **binary** classification. It outputs one probability for "class 1." Softmax Regression generalizes this to **multiple classes** by learning one set of weights *per class* instead of just one.
+- Instead of one weight vector, the model holds a `weights` matrix of shape `(k, n_features)` — `k` being the number of classes. So every class gets its own linear score (logit) computed in parallel: `Z = X @ weights.T`.
+- The **softmax function** converts these `k` raw logits per sample into `k` probabilities that all sum to 1: `S = exp(Z) / Σexp(Z)`. This is the direct multiclass extension of sigmoid. Sigmoid is really just softmax with `k=2`, normalized against an implicit second class.
+- Subtracting the row-wise max (`Z - max(Z, axis=1)`) before exponentiating is a numerical stability trick. It doesn't change the softmax output mathematically (since it cancels out in the ratio), but it prevents `np.exp()` from overflowing on large logit values.
+- The target needs **one-hot encoding** (`y_ohe`) instead of a single label column, since the loss now needs to compare a full probability distribution over `k` classes against the true class, not just a single 0/1 value.
+- The weight update rule is the direct multiclass version of Day 20's batch gradient descent: `weights += learning_rate * (y_ohe - y_pred).T @ X / n`. It's the same "error times input, averaged" gradient just computed simultaneously across all `k` class-weight-rows instead of one.
+- Prediction works by taking `argmax` across the `k` softmax probabilities whichever class got the highest predicted probability is the final label, then mapped back from the encoded index to the actual class name using `ohe.categories_`.
+- Tested on the Iris dataset (3 classes) and got 100% match against `y_test` a clean confirmation that the from-scratch multiclass gradient descent converges correctly on a simple, well-separated dataset.
+
+**Code:** [softmax_regression.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-23-Softmax-Regression-Multinomial-Logistic-Regression/softmax_regression.ipynb)
 
 ---
 
