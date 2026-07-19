@@ -33,7 +33,8 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 20 | Logistic Regression using Gradient Descent | ✅ |
 | 21 | Classification Matrices (Accuracy/Confusion Matrix/Precision/Recall/F1) | ✅ |
 | 22 | ROC Curve - AUC | ✅ |
-| 22 | Softmax Regression/Multinomial Logistic Regression | ✅ |
+| 23 | Softmax Regression/Multinomial Logistic Regression | ✅ |
+| 24 | Naive Bayes (Gaussian, Multinomial & Bernoulli) | ✅ |
 
 ## 📖 Daily Logs
 
@@ -403,6 +404,21 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 - Tested on the Iris dataset (3 classes) and got 100% match against `y_test` a clean confirmation that the from-scratch multiclass gradient descent converges correctly on a simple, well-separated dataset.
 
 **Code:** [softmax_regression.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-23-Softmax-Regression-Multinomial-Logistic-Regression/softmax_regression.ipynb)
+
+---
+
+### Day 24: Naive Bayes (Gaussian, Multinomial, Bernoulli)
+**What I learned:**
+- Naive Bayes runs on Bayes' Theorem plus one strong assumption: features are conditionally independent given the class. The model computes `P(class | features)` as proportional to `P(class) × Π P(feature_i | class)`, with no term for feature interactions. That assumption makes the model fast and simple, and it costs accuracy when features correlate with each other.
+- Gaussian, Multinomial, and Bernoulli share one skeleton: a prior `P(class)` from class frequency, a likelihood `P(feature | class)`, then a posterior comparison across classes. The three variants only disagree on what the likelihood function assumes about the data.
+- Each implementation scores in log-space: `log_prior + Σ log_likelihood` instead of multiplying raw probabilities. Multiplying many small probabilities underflows to zero fast. Summing logs avoids that and produces the same ranking, since `log(a×b) = log(a) + log(b)`.
+- Gaussian Naive Bayes treats each feature as continuous and normally distributed within a class. It fits a mean and variance per feature per class, then scores a new point with the log of the Gaussian PDF. `var_smoothing` adds a small epsilon to every variance so a zero-variance feature never divides by zero.
+- Multinomial Naive Bayes treats features as counts, like word frequencies in a document. The likelihood comes from how often each feature appears in a class relative to the total feature count in that class. Text classification with word-count features uses this variant by default.
+- Bernoulli Naive Bayes treats features as binary: present or absent. Its likelihood is `P(feature=1 | class)`, and unlike Multinomial, it scores absence too (`1 - p`). Feed both variants the same binary data and they'll disagree, because Multinomial never penalizes an absent feature.
+- Laplace smoothing (`alpha`, in Multinomial and Bernoulli) adds a small constant to every count before computing probabilities. Without it, a feature that never appeared with a class during training gets `probability = 0`, which zeroes out that class's entire prediction regardless of every other feature.
+- Gaussian NB matched `sklearn`'s `GaussianNB` on the Iris dataset: identical predictions, identical 97.8% accuracy. That match confirms the from-scratch log-likelihood math is correct.
+
+**Code:** [naive_bayes.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-24-Naive-Bayes/naive_bayes.ipynb)
 
 ---
 
