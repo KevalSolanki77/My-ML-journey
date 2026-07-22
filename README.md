@@ -35,6 +35,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 22 | ROC Curve - AUC | ✅ |
 | 23 | Softmax Regression/Multinomial Logistic Regression | ✅ |
 | 24 | Naive Bayes (Gaussian, Multinomial & Bernoulli) | ✅ |
+| 24 | KNearestNeighbors (KNN) | ✅ |
 
 ## 📖 Daily Logs
 
@@ -422,13 +423,28 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 
 ---
 
+### Day 25: K-Nearest Neighbors (KNN)
+**What I learned:**
+- KNN makes no assumption about the underlying data distribution and doesn't "train" a model in the usual sense. It stores the training data, and at prediction time it measures the distance from a new point to every training point, takes the `K` closest ones, and assigns the majority class among them.
+- Feature scaling matters here more than in most models, because KNN's decision depends directly on distance. A feature with a larger numeric range dominates the distance calculation even if it's not more predictive, so `StandardScaler` runs before fitting.
+- `K` is the one hyperparameter that controls everything. Looping `n_neighbors` from 1 to 20 and plotting recall against it turned the choice from a guess into a readable curve, the same approach used for choosing threshold in Day 22's ROC curve.
+- A small `K` overfits. At `K=1`, the decision boundary (visualized with `plot_decision_regions` on the moons dataset) wraps tightly around individual points, carving out tiny regions to match every training point exactly, including noise.
+- A large `K` underfits. At `K=200`, the boundary flattens out and stops reacting to the actual shape of the data, since the vote gets diluted across too many neighbors regardless of how close they are.
+- This mirrors the polynomial degree tradeoff from Day 14: both show the same underfitting-to-overfitting spectrum, just controlled by a different knob (`K` here, polynomial degree there).
+- KNN has real limits: it gets computationally expensive on large datasets, since every prediction scans the full training set. High-dimensional data breaks it too, because distance stops being meaningful as dimensions grow (the curse of dimensionality). It's also sensitive to outliers, imbalanced classes, and unscaled features.
+- KNN suits prediction, not inference. It never produces a coefficient or feature importance, so it can't explain how much any single feature drove a prediction, unlike Linear/Logistic Regression's coefficients.
+
+**Code:** [knn.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-25-KNN/knn.ipynb)
+
+---
+
 ## 🛠️ Tech Stack
-`Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute` `Plotly`
+`Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute` `Plotly` `mlxtend`
 
 ## Install Dependency 
 
 ```bash
-pip install numpy pandas matplotlib seaborn scikit-learn pyampute plotly
+pip install numpy pandas matplotlib seaborn scikit-learn pyampute plotly mlxtend
 ```
 
 ## License 
