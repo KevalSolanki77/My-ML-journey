@@ -438,6 +438,23 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 
 ---
 
+### Day 26: Support Vector Machine (SVM)
+**What I learned:**
+- SVM finds the decision boundary (hyperplane, `wᵀx + b = 0`) that doesn't just separate the two classes, but maximizes the **margin**, the distance between the boundary and the nearest point of either class. This is a different objective than Logistic Regression, which just finds any boundary that fits the sigmoid/log-loss best, with no explicit margin concept.
+- The points that sit exactly on the margin boundary are called **support vectors**, and they're the only points that actually determine where the hyperplane sits. Every other point could move (as long as it stays outside the margin) without changing the boundary at all, this is what makes SVM different from something like Logistic Regression, where every point contributes to the loss.
+- **Hard Margin SVM** assumes the data is perfectly separable, and solves for `w` that minimizes `||w||² / 2` subject to `y_i(wᵀx_i + b) ≥ 1` for every point. Minimizing `||w||²` is mathematically equivalent to maximizing the margin, since margin width is `2/||w||`, smaller `w` means wider margin.
+- **Soft Margin SVM** exists because real data is rarely perfectly separable. It adds a penalty term for misclassified or margin-violating points: `||w||²/2 + C · Σ max(0, 1 - y_i(wᵀx_i + b))`. The first term still maximizes margin, the second term tolerates some errors instead of demanding perfect separation.
+- That penalty term is the **hinge loss**: `L(y, f(x)) = max(0, 1 - y·f(x))`. It's zero once a point is correctly classified and outside the margin, and grows linearly the further a point violates the margin or gets misclassified, unlike log loss, hinge loss doesn't punish confident correct predictions at all.
+- **C** controls the tradeoff between the two terms. A high `C` pushes the model to prioritize minimizing misclassifications over margin width, producing a narrower margin that fits the training data tightly (closer to overfitting). A low `C` prioritizes a wide margin even if it means tolerating more misclassified points (closer to underfitting), this is the same bias-variance tradeoff seen in Ridge/Lasso's `alpha`, just framed for classification.
+- SVM handles non-linearly separable data (like concentric circles) through the **kernel trick**. Instead of manually transforming data into a higher dimension where it becomes separable, a kernel function computes what the dot product *would be* in that higher-dimensional space, without ever actually computing the transformation. This makes it computationally feasible to fit a linear boundary in a space that's expensive or infinite-dimensional to construct directly.
+- The **RBF kernel** maps data into an infinite-dimensional space based on distance between points (`exp(-γ||x - x'||²)`), it's the default choice for data with no obvious polynomial or linear structure, since it can approximate almost any decision boundary shape given the right `gamma`.
+- The **Polynomial kernel** maps data using polynomial combinations of features up to a chosen `degree`, similar in spirit to Day 14's Polynomial Regression, but applied to find a separating boundary instead of fitting a curve.
+- Kernel choice is itself a bias-variance decision: linear kernel for linearly separable data, polynomial for data with a known interaction structure, RBF as a flexible default when the boundary shape is unknown, with `gamma` and `degree` playing a similar overfitting/underfitting role to `K` in KNN (Day 25) or `degree` in Polynomial Regression.
+
+**Code:** [svm.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-26-SVM/svm.ipynb)
+
+---
+
 ## 🛠️ Tech Stack
 `Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute` `Plotly` `mlxtend`
 
