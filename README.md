@@ -455,6 +455,22 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 
 ---
 
+### Day 27: Decision Trees
+**What I learned:**
+- A Decision Tree splits data recursively into smaller regions, choosing at each node the feature and threshold that best separates the classes, until the leaves are pure (or some stopping rule kicks in). Unlike SVM or Logistic Regression, it doesn't fit a single global boundary equation, it builds a sequence of if/else rules.
+- Every hyperparameter tested here does the same thing conceptually: it limits how much the tree is allowed to keep splitting. Since an unconstrained tree can always keep splitting until every leaf has one sample (100% train accuracy, badly overfit), these parameters are all different ways to force it to stop earlier.
+- `max_depth` caps how many levels the tree can grow. Low depth underfits, since the tree can't carve out enough regions to separate the classes. Unlimited depth overfits, since the tree keeps subdividing down to individual noisy points, this showed directly in the depth sweep, where `depth=1` barely separates the moons and `depth=None` produces a jagged boundary hugging individual training points.
+- `min_samples_split` sets the minimum number of samples a node needs before it's even allowed to split. Default is 2, which permits splitting almost down to single points. Raising it (to 20+) forces nodes with few samples to become leaves immediately, a cheaper way to prevent overfitting than tuning depth directly.
+- `min_samples_leaf` sets the minimum number of samples required in *each resulting child* after a split. A split that would leave any child with too few samples gets rejected outright, this is stricter than `min_samples_split`, since it looks at the outcome of a split rather than just the size of the node being split.
+- `max_leaf_nodes` caps the total number of leaves across the whole tree, not per branch. Once the cap is hit, the tree stops growing everywhere, even in shallow branches that would clearly benefit from one more split, this trades a bit of local optimality for a hard global limit on complexity.
+- `min_impurity_decrease` sets a threshold on how much a split needs to reduce impurity (Gini/entropy) to be worth doing at all. If the best available split doesn't clear that bar, the node becomes a leaf, even with plenty of data left to split, this is the only parameter here that judges split *quality*, not just node/leaf size.
+- All five parameters control the same underfitting-to-overfitting spectrum from a different angle, tree depth, minimum node size, leaf count, and split quality are just different levers on the same problem, this is the same bias-variance tradeoff seen with `K` in KNN, `degree` in Polynomial Regression, and `alpha` in Ridge/Lasso.
+- Since these parameters interact instead of acting independently, `GridSearchCV` searches combinations of all five together with 5-fold cross-validation, rather than tuning each one in isolation, since the best `max_depth` can depend on what `min_samples_leaf` is set to, and vice versa.
+
+**Code:** [decision_tree.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-27-Decision-Tree/decision_tree.ipynb)
+
+---
+
 ## 🛠️ Tech Stack
 `Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute` `Plotly` `mlxtend`
 
