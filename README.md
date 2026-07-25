@@ -471,6 +471,20 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 
 ---
 
+### Day 28: Decision Tree Regressor
+**What I learned:**
+- A Decision Tree Classifier splits to reduce *impurity* (Gini/entropy), a Decision Tree Regressor splits to reduce *variance/squared error*. Same recursive search mechanism from Day 27, different metric being minimized at each split.
+- For every candidate threshold along a feature's range, the tree splits the data into two groups, predicts the **mean** of each group, and measures the combined squared error between each point and its group's mean. The threshold that produces the lowest combined squared error wins, that's where the split happens.
+- This makes intuitive sense: a good split creates two groups that are each tightly clustered around their own mean (low internal spread). A bad split leaves at least one group scattered, so its mean becomes a poor stand-in for the actual values, which shows up as high squared error at that split.
+- The splitting process repeats recursively on each resulting group, exactly like the classifier, until a stopping rule kicks in (`max_depth`, `min_samples_leaf`, `min_samples_split`, `max_leaf_nodes`, `min_impurity_decrease`, all the same parameters and same over/underfitting tradeoffs from Day 27 apply here unchanged).
+- The one real difference at the leaf level: a classification leaf predicts the *majority class* among its samples, a regression leaf predicts the *mean value* of its samples. Since a tree can only output values it's seen averaged from training data, it can't extrapolate a trend beyond the range of its training data, unlike a Linear or Polynomial Regressor.
+- Regression trees add a `criterion` hyperparameter classifiers don't tune here: `squared_error`, `friedman_mse` (a refinement of squared error), and `absolute_error`, which change what "best split" even means, minimizing squared error vs. absolute error can pick different thresholds, especially when outliers are present, since squared error penalizes large errors more heavily.
+- Tested against a noisy sine wave, this is a good illustration of the leaf-mean limitation: a tree with too much depth will produce a jagged, staircase-like prediction line that memorizes the noise's local mean at every tiny interval rather than the smooth underlying sine pattern, since it has no way to interpolate smoothly like a curve-fitting model would.
+
+**Code:** [regressor_tree.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-28-Regressor-Tree/regressor_tree.ipynb)
+
+---
+
 ## 🛠️ Tech Stack
 `Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute` `Plotly` `mlxtend`
 
