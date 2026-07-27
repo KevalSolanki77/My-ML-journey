@@ -35,7 +35,11 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 22 | ROC Curve - AUC | ✅ |
 | 23 | Softmax Regression/Multinomial Logistic Regression | ✅ |
 | 24 | Naive Bayes (Gaussian, Multinomial & Bernoulli) | ✅ |
-| 24 | KNearestNeighbors (KNN) | ✅ |
+| 25 | KNearestNeighbors (KNN) | ✅ |
+| 26 | Support Vector Machine (SVM) | ✅ |
+| 27 | Decision Trees | ✅ |
+| 28 | Regressor Tree | ✅ |
+| 29 | Voting Ensemble | ✅ |
 
 ## 📖 Daily Logs
 
@@ -484,6 +488,21 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 **Code:** [regressor_tree.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-28-Regressor-Tree/regressor_tree.ipynb)
 
 ---
+
+### Day 29: Voting Ensembles (Classifier & Regressor)
+**What I learned:**
+- An ensemble combines predictions from multiple models into one final prediction, on the idea that different models make different mistakes, so combining them cancels out some of the individual errors instead of relying on one model's blind spots.
+- `VotingClassifier` supports two voting strategies: **Hard voting** takes the majority predicted class across all models, ties are broken arbitrarily. **Soft voting** averages the predicted *probabilities* from each model, then picks the class with the highest average probability, this uses more information than hard voting, since it accounts for how confident each model was, not just what it picked.
+- `VotingRegressor` has no vote to take, since there's no discrete class, the final prediction is simply the **average** of every model's predicted value (or a **weighted average** if weights are set).
+- Tested ensembles built from **different model types** (Logistic Regression + Decision Tree + KNN), this is the classic use case: each model has different strengths and blind spots (linear boundary vs. axis-aligned splits vs. local neighborhoods), so the ensemble smooths over each one's individual weaknesses.
+- Also tested ensembles built from the **same model type at different hyperparameters** (three Decision Trees at depth 2, 5, and unlimited), this showed that ensembling doesn't require different algorithms, averaging a shallow (underfit) tree with a deep (overfit) tree can land closer to a well-generalized boundary than either alone, similar in spirit to how KNN or Decision Tree hyperparameter tuning searches for a good middle ground, except here it's achieved by combining extremes instead of picking one middle value.
+- `weights` lets you bias the vote/average toward whichever base model is most trustworthy, instead of every model counting equally. Weighting the KNN model highest (`weights=[1,2,3]`) shifted both the decision boundary and the regression line noticeably closer to KNN's individual prediction than the unweighted version.
+- Visualizing the ensemble's decision region (classification) or prediction curve (regression) together with every individual model's boundary/line on the same plot made the smoothing effect visible directly, the ensemble line consistently sits as some kind of blend between its component models rather than matching any single one exactly.
+- Cross-validated accuracy/R² scores across all three scenarios generally showed the ensemble scoring competitively with or better than the best individual base model, though not guaranteed to beat every individual model every time, an ensemble only helps if its component models are reasonably good and make different kinds of errors, an ensemble of consistently bad models won't magically become good.
+
+**Code:** [voting_ensemble.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-29-Voting-Ensemble/voting_ensemble.ipynb)
+
+___
 
 ## 🛠️ Tech Stack
 `Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute` `Plotly` `mlxtend`
