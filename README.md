@@ -9,38 +9,38 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 
 ## 🗂️ Progress Tracker
 
-| Day | Topic | Status |
-|-----|-------|--------|
-| 1 | NumPy | ✅ |
-| 2 | Pandas | ✅ |
-| 3 | Data Collection | ✅ |
-| 4 | Data Visualization | ✅ |
-| 5 | Imputation | ✅ |
-| 6 | Encoding | ✅ |
-| 7 | Feature Scaling | ✅ |
-| 8 | Column Transformer | ✅ |
-| 9 | Function Transformer | ✅ |
-| 10 | Pipelines | ✅ |
-| 11 | Binning & Binarization | ✅ |
-| 12 | Linear Regression (OLS) | ✅ |
-| 13 | Gradient Descent | ✅ |
-| 14 | Polynomial Regression | ✅ |
-| 15 | Condition Number & VIF | ✅ |
-| 16 | Ridge Regressor | ✅ |
-| 17 | Lasso And ElasticNet Regressor | ✅ |
-| 18 | Logistic Regression using Perceptron | ✅ |
-| 19 | Logistic Regression using Sigmoid Function | ✅ |
-| 20 | Logistic Regression using Gradient Descent | ✅ |
-| 21 | Classification Matrices (Accuracy/Confusion Matrix/Precision/Recall/F1) | ✅ |
-| 22 | ROC Curve - AUC | ✅ |
-| 23 | Softmax Regression/Multinomial Logistic Regression | ✅ |
-| 24 | Naive Bayes (Gaussian, Multinomial & Bernoulli) | ✅ |
-| 25 | KNearestNeighbors (KNN) | ✅ |
-| 26 | Support Vector Machine (SVM) | ✅ |
-| 27 | Decision Trees | ✅ |
-| 28 | Regressor Tree | ✅ |
-| 29 | Voting Ensemble | ✅ |
-| 30 | Bagging Ensemble | ✅ |
+| Day | Topic | Status | Link |
+|-----|-------|--------|------|
+| 1 | NumPy | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-01-Numpy) |
+| 2 | Pandas | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-02-Pandas) |
+| 3 | Data Collection | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-03-Data-Collection) |
+| 4 | Data Visualization | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-04-Visualization) |
+| 5 | Imputation | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-05-Imputation) |
+| 6 | Encoding | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-06-Encoding) |
+| 7 | Feature Scaling | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-07-Feature-scaling) |
+| 8 | Column Transformer | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-08-Column-Transformer) |
+| 9 | Function Transformer | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-09-Function_Transformer) |
+| 10 | Pipelines | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-10-PipeLines) |
+| 11 | Binning & Binarization | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-11-Binning-Binarization) |
+| 12 | Linear Regression (OLS) | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-12-Linear-Regressor-using-OLS) |
+| 13 | Gradient Descent | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-13-Gradient-Descent) |
+| 14 | Polynomial Regression | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-14-Polynonial-Regression) |
+| 15 | Condition Number & VIF | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-15-Condition-Numbers) |
+| 16 | Ridge Regressor | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-16-Ridge-Regressor) |
+| 17 | Lasso And ElasticNet Regressor | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-17-Lasso-and-ElasticNet-Regressor) |
+| 18 | Logistic Regression using Perceptron | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-18-Logistic-Regression-using-Perceptron) |
+| 19 | Logistic Regression using Sigmoid Function | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-19-Logistic-Regression-using-Sigmoid-Fucntion) |
+| 20 | Logistic Regression using Gradient Descent | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-20-Logistic-Regression-using-Gradient-Descent) |
+| 21 | Classification Matrices (Accuracy/Confusion Matrix/Precision/Recall/F1) | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-21-Classification-Matrices) |
+| 22 | ROC Curve - AUC | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-22-ROC-AUC) |
+| 23 | Softmax Regression/Multinomial Logistic Regression | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-23-Softmax-Regression-Multinomial-Logistic-Regression) |
+| 24 | Naive Bayes (Gaussian, Multinomial & Bernoulli) | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-24-Naive-Bayes) |
+| 25 | KNearestNeighbors (KNN) | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-25-KNN) |
+| 26 | Support Vector Machine (SVM) | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-26-SVM) |
+| 27 | Decision Trees | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-27-Decision-Tree) |
+| 28 | Regressor Tree | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-28-Regressor-Tree) |
+| 29 | Voting Ensemble | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-29-Voting-Ensemble) |
+| 30 | Bagging Ensemble | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-30-Bagging-Ensemble) |
 
 ## 📖 Daily Logs
 
