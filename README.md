@@ -40,6 +40,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 27 | Decision Trees | ✅ |
 | 28 | Regressor Tree | ✅ |
 | 29 | Voting Ensemble | ✅ |
+| 30 | Bagging Ensemble | ✅ |
 
 ## 📖 Daily Logs
 
@@ -502,7 +503,26 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 
 **Code:** [voting_ensemble.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-29-Voting-Ensemble/voting_ensemble.ipynb)
 
-___
+---
+
+### Day 30: Bagging Ensembles
+**What I learned:**
+- Bagging (Bootstrap Aggregating) takes a different approach from Day 29's Voting: instead of training different model *types* on the same full dataset, it trains many copies of the *same* model type, each on a different random sample of the data, then aggregates their predictions.
+- `Bootstrapping` is the sampling step: pulling random subsets of the training data (rows, columns, or both) to give each individual model a slightly different view of the data. `Aggregation` is the combining step: majority vote for classification, average for regression, exactly like the voting mechanics from Day 29, except every base model here is the same algorithm.
+- The whole point is variance reduction. A single Decision Tree is high-variance, small changes in training data can produce a very different tree. Training many trees on different bootstrapped samples and averaging them smooths out that instability, since each tree's individual noise tends to cancel out across the ensemble.
+- There are four bootstrap flavors, and they differ on two independent axes, what gets sampled (rows or columns) and whether sampling allows repeats (with or without replacement):
+  - **Bagging**: rows, with replacement, some rows can appear multiple times in a single model's training sample, others not at all.
+  - **Pasting**: rows, without replacement, each model still trains on a subset of rows, but no row repeats within that subset.
+  - **Random Subspaces**: columns, with replacement, each model sees all rows but only a random subset of features.
+  - **Random Patches**: both rows and columns sampled together, the most aggressive variation, each model gets a different subset of both.
+- Sampling *with replacement* (true bootstrapping) means some training points get left out of a given model's sample entirely, purely by chance, this is what creates diversity across models even though they're all the same algorithm on the same source dataset.
+- Comparing a single Decision Tree against a 50-tree Bagging ensemble on the same data made the variance reduction visible directly: the single tree's decision boundary is jagged and closely hugs individual training points, while the bagging ensemble's boundary is visibly smoother, since it's an aggregate of 50 slightly different jagged boundaries averaging out each other's sharp edges.
+- Cross-validated accuracy/R² consistently favored the bagging ensemble over the single tree across all four bootstrap flavors, confirming that ensembling doesn't require different algorithms (Day 29) or different hyperparameters, resampling the same model on different data slices is enough to meaningfully improve generalization.
+- Feature sampling (Random Subspaces, Random Patches) does something rows-only bagging can't: it decorrelates the trees further by forcing them to consider different feature subsets, which becomes especially useful when a few dominant features would otherwise cause every bootstrapped tree to make very similar splits regardless of which rows they saw. This is also the direct conceptual bridge to Random Forests.
+
+**Code:** [bagging_ensemble.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-30-Bagging-Ensemble/bagging_ensemble.ipynb)
+
+---
 
 ## 🛠️ Tech Stack
 `Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute` `Plotly` `mlxtend`
