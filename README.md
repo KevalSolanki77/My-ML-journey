@@ -41,6 +41,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 28 | Regressor Tree | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-28-Regressor-Tree) |
 | 29 | Voting Ensemble | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-29-Voting-Ensemble) |
 | 30 | Bagging Ensemble | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-30-Bagging-Ensemble) |
+| 31 | Random Forest | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-31-Random-Forest) |
 
 ## 📖 Daily Logs
 
@@ -521,6 +522,20 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 - Feature sampling (Random Subspaces, Random Patches) does something rows-only bagging can't: it decorrelates the trees further by forcing them to consider different feature subsets, which becomes especially useful when a few dominant features would otherwise cause every bootstrapped tree to make very similar splits regardless of which rows they saw. This is also the direct conceptual bridge to Random Forests.
 
 **Code:** [bagging_ensemble.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-30-Bagging-Ensemble/bagging_ensemble.ipynb)
+
+---
+
+### Day 31: Random Forest
+**What I learned:**
+- Random Forest is Bagging (Day 30) plus one extra layer of randomness: Bagging resamples rows for each tree but still lets every tree consider all features at every split. Random Forest additionally restricts each split to a random subset of features (`max_features="sqrt"`), so no two trees see the same feature choices even when they'd otherwise agree.
+- That extra restriction fixes a specific weakness in plain Bagging: if one or two features are strongly dominant, every bootstrapped tree tends to split on those same features first regardless of which row sample it got, making the trees correlated with each other even though they're trained on different data. Forcing a random feature subset at each split breaks that correlation.
+- Confirmed this directly by counting how often each feature actually gets used across every split, in every tree. Bagging's histogram concentrates heavily on a few dominant features. Random Forest's histogram spreads split usage more evenly across all features, since dominant features aren't guaranteed to be available at every split.
+- Less correlated trees average out to a lower-variance ensemble. This showed up in the three-way comparison (Single Tree vs Bagging vs Random Forest): the single tree overfits sharply, Bagging smooths it out, and Random Forest smooths it further still, this reflects directly in higher cross-validated accuracy/R² for Random Forest over Bagging on the same data.
+- `RandomizedSearchCV` tuned `n_estimators`, `max_depth`, `max_features`, `min_samples_split`, `min_samples_leaf`, and `bootstrap` together, the same tree-complexity parameters from Day 27/28, now applied per-tree inside the forest, plus `max_features`, which is unique to Random Forest's extra randomness layer.
+- **Out-of-Bag (OOB) score** is a free validation estimate that comes from bagging's own sampling process: since each tree is trained on a bootstrapped sample, roughly a third of the data gets left out of any given tree's training set by chance. Each tree can be scored on the data it never saw, and averaging that across all trees gives a validation estimate without needing a separate held-out set or cross-validation folds.
+- Comparing the OOB score against 5-fold CV accuracy/R² on the same tuned forest showed them landing close to each other, this is the practical payoff of OOB: a near-equivalent estimate to cross-validation, obtained from a single `fit()` call instead of retraining the model 5 separate times.
+
+**Code:** [random_forest.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-31-Random-Forest/random_forest.ipynb)
 
 ---
 
