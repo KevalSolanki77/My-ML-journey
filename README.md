@@ -42,6 +42,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 29 | Voting Ensemble | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-29-Voting-Ensemble) |
 | 30 | Bagging Ensemble | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-30-Bagging-Ensemble) |
 | 31 | Random Forest | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-31-Random-Forest) |
+| 32 | Feature Importance | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-32-Feature-Importance) |
 
 ## 📖 Daily Logs
 
@@ -536,6 +537,21 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 - Comparing the OOB score against 5-fold CV accuracy/R² on the same tuned forest showed them landing close to each other, this is the practical payoff of OOB: a near-equivalent estimate to cross-validation, obtained from a single `fit()` call instead of retraining the model 5 separate times.
 
 **Code:** [random_forest.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-31-Random-Forest/random_forest.ipynb)
+
+---
+
+### Day 32: Feature Importance
+**What I learned:**
+- Feature importance answers a question trees can naturally answer but linear models can't as directly: which feature actually drove the predictions the most. Linear/Logistic Regression coefficients hint at this, but tree-based importance is derived straight from how much each feature reduced impurity across every split it was used in.
+- The importance of a single node comes from how much that split reduced impurity, weighted by how much data passed through it: `n_i = (N_t/N) × [impurity - (N_t_R/N_t · right_impurity) - (N_t_L/N_t · left_impurity)]`. A split that cleanly separates a lot of data gets more weight than a split deep in the tree acting on just a handful of samples.
+- A single feature's importance is the sum of every node's importance where that feature was the one used to split, normalized against the total importance across all nodes in the tree. This is why `feature_importances_` values across all features always sum to 1, they're a relative share of total impurity reduction, not an absolute score.
+- Random Forest extends this by just averaging that same per-tree importance across every tree in the forest: `FI_k = (1/T) Σ fi_k^(t)`. Since each tree saw a different bootstrapped sample and a different random feature subset (Day 31), averaging smooths out any one tree's quirks and gives a more stable importance ranking than a single Decision Tree would.
+- Tested this visually on MNIST by reshaping the 784 pixel-feature importances back into a 28×28 heatmap, this makes the abstract importance score interpretable at a glance: the central pixels where digit strokes actually occur light up, while the border pixels (almost always blank in every image) stay near zero, exactly matching the intuition that a pixel with no variation across samples can't be useful for splitting.
+- Built-in `feature_importances_` has a real limitation: it's derived purely from training-time impurity reduction, so it can overstate a feature's importance if the feature happens to have high cardinality or many possible split points, even if that feature isn't actually predictive on new data. It measures usefulness *during tree construction*, not usefulness for actual generalization.
+- `permutation_importance` measures something more direct: it shuffles one feature's values (breaking its relationship with the target) and checks how much the trained model's performance *drops* on real data. A feature that matters a lot will hurt performance badly when scrambled, an irrelevant feature won't move the score much regardless of how often it happened to get split on during training.
+- Comparing both side by side on the same synthetic dataset (20 features, only 5 informative + 5 redundant) showed they don't always agree, `feature_importances_` can rank a feature highly just because trees happened to split on it often, while permutation importance can reveal that shuffling it barely changes actual predictive performance, exposing the gap between "used a lot during training" and "actually needed for accurate predictions."
+
+**Code:** [feature_importance.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-32-Feature-Importance/feature_importance.ipynb)
 
 ---
 
