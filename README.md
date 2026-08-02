@@ -43,6 +43,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 30 | Bagging Ensemble | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-30-Bagging-Ensemble) |
 | 31 | Random Forest | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-31-Random-Forest) |
 | 32 | Feature Importance | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-32-Feature-Importance) |
+| 33 | AdaBoost | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-33-AdaBoost) |
 
 ## 📖 Daily Logs
 
@@ -552,6 +553,23 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 - Comparing both side by side on the same synthetic dataset (20 features, only 5 informative + 5 redundant) showed they don't always agree, `feature_importances_` can rank a feature highly just because trees happened to split on it often, while permutation importance can reveal that shuffling it barely changes actual predictive performance, exposing the gap between "used a lot during training" and "actually needed for accurate predictions."
 
 **Code:** [feature_importance.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-32-Feature-Importance/feature_importance.ipynb)
+
+---
+
+### Day 33: AdaBoost
+**What I learned:**
+- AdaBoost is boosting, a fundamentally different strategy from Bagging/Random Forest (Days 30-31). Bagging trains many strong-ish models in parallel on independent random samples and averages them. Boosting trains many weak models sequentially, where each new model focuses specifically on the mistakes the previous ones made.
+- The base learner is usually a **decision stump**, a Decision Tree with `max_depth=1`, one single split. A stump alone barely beats a coin flip, that's the point, boosting builds a strong model by combining many weak ones, not by starting with a strong one.
+- Every training sample carries a **weight**. All samples start equal, but after each stump is trained, the samples it got wrong have their weight increased and the samples it got right have their weight decreased. The next stump then trains on this reweighted data, forcing it to prioritize exactly the points the previous stump struggled with.
+- Each stump also earns a **vote strength (alpha)** based on its own weighted error, a stump that performs well gets a large alpha and its prediction counts more in the final vote, a stump that barely beats random guessing gets a small alpha and barely influences the outcome.
+- The final prediction is a weighted vote (classification) or weighted sum (regression) across every stump, weighted by each one's alpha, not a simple majority/average like Bagging uses. A single highly accurate stump can outweigh several mediocre ones.
+- `staged_predict()` exposes the boundary after each individual stump is added, this makes the sequential-correction behavior visible directly: after 1 stump the boundary is a single straight cut, and it sharpens into a genuinely non-linear boundary as more stumps accumulate, each new stump patching a specific region the ensemble was still getting wrong.
+- Plotting `estimator_errors_` and `estimator_weights_` across all 150 stages shows the mechanism numerically: stages with low weighted error get high alpha (more voting power), stages with high weighted error get low alpha, confirming that AdaBoost isn't just adding stumps, it's calibrating how much to trust each one.
+- `learning_rate` scales how much each stump's alpha counts toward the final vote. Lower learning rate means each stump contributes less individually, which usually means more estimators are needed to reach the same performance, this is the same shrinkage tradeoff as a gradient descent learning rate (Day 13), just applied per-model instead of per-step.
+- AdaBoost can stop adding stumps early, if a stump's weighted error reaches ≥ 0.5 or a perfect fit is found, sklearn halts and builds fewer stages than `n_estimators` requested, this showed up directly in the regressor, which built noticeably fewer than 150 stages before stopping.
+- Tuned `n_estimators`, `learning_rate`, and the base `estimator`'s own `max_depth` together via `RandomizedSearchCV`, base learner depth matters here too, since AdaBoost isn't strictly limited to depth-1 stumps, deeper base trees can be used when the relationship needs more than a single split's worth of expressiveness per stage.
+
+**Code:** [adaboost.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-33-AdaBoost/adaboost.ipynb)
 
 ---
 
