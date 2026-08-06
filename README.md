@@ -44,6 +44,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 31 | Random Forest | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-31-Random-Forest) |
 | 32 | Feature Importance | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-32-Feature-Importance) |
 | 33 | AdaBoost | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-33-AdaBoost) |
+| 34 | Gradient Boosting Regression | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-34-Gradient-Boosting-Regression) |
 
 ## 📖 Daily Logs
 
@@ -573,6 +574,20 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 
 ---
 
+### Day 34: Gradient Boosting Regressor
+**What I learned:**
+- Gradient Boosting is boosting (like AdaBoost, Day 33) but corrects errors in a different way. AdaBoost reweights misclassified *samples* so the next stump focuses on them harder. Gradient Boosting instead has each new model predict the **residual error** of the ensemble so far, directly targeting the leftover error itself rather than reweighting which points matter.
+- The first model isn't a tree at all, it's just the **mean of the target**. This works because that's the single best constant prediction under squared error, the baseline every future tree improves on.
+- After the first prediction, the **pseudo-residual** is computed: `residual = actual - prediction`. This residual becomes the *new target* that the next tree is trained on, the second tree never sees the original `y`, it only ever learns to predict how wrong the current ensemble still is.
+- Each new tree's contribution gets scaled down by the **learning rate** before being added: `pred_new = pred_old + lr * tree.predict(X)`. A learning rate of 1.0 lets each tree fully correct the remaining error in one step, a smaller learning rate (like 0.1) takes smaller corrective steps, needing more trees to reach the same fit but generalizing better, the same shrinkage tradeoff as AdaBoost's learning rate and gradient descent's step size.
+- This repeats recursively, tree 3 predicts the residual left after tree 1 + tree 2's combined (scaled) prediction, and so on, the general formula for N trees is `y_pred = mean + lr * Σ tree_i.predict(X)`, an additive model built one error-correcting tree at a time.
+- Watching the fitted curve after 1, 2, 3+ trees showed this directly: with `max_leaf_nodes=10` trees, the prediction line starts as a rough approximation of the mean and progressively bends to match the true quadratic-shaped data more closely as each new tree patches the remaining residual.
+- Why it's called "Gradient" Boosting: fitting each new tree to the residual (`actual - prediction`) is mathematically the same as fitting to the negative gradient of the squared error loss with respect to the prediction. Gradient Boosting is really gradient descent, except each "step" is an entire decision tree instead of a small numeric update to a parameter.
+- `sklearn`'s `GradientBoostingRegressor` bundles this exact loop (mean baseline → residual-fitting trees → learning-rate-scaled additive combination) behind one `.fit()` call, matching the from-scratch recursive version conceptually.
+
+**Code:** [GBReg.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-34-Gradient-Boosting-Regression/GBReg.ipynb)
+
+---
 ## 🛠️ Tech Stack
 `Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute` `Plotly` `mlxtend`
 
