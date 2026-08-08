@@ -45,6 +45,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 32 | Feature Importance | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-32-Feature-Importance) |
 | 33 | AdaBoost | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-33-AdaBoost) |
 | 34 | Gradient Boosting Regression | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-34-Gradient-Boosting-Regression) |
+| 35 | Gradient Boosting Classification | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-35-Gradient-Boosting-Classification) |
 
 ## 📖 Daily Logs
 
@@ -588,6 +589,22 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 **Code:** [GBReg.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-34-Gradient-Boosting-Regression/GBReg.ipynb)
 
 ---
+
+### Day 35: Gradient Boosting Classifier
+**What I learned:**
+- Gradient Boosting Regressor (Day 34) fits residuals directly, since squared error's negative gradient is just `actual - prediction`. Classification can't work that way, the target is a class label, not a number a tree can meaningfully predict as a residual, so the whole thing has to run in **log-odds space** instead of raw probability space.
+- The base prediction `F0` isn't a mean like the regressor, it's the log-odds of the target's overall positive rate: `F0 = log(p / (1-p))`. Every tree's contribution gets added on top of this log-odds score, not a probability directly, that's why `Fm` (the running prediction) stays in log-odds throughout training and only gets converted to a probability when needed.
+- At each stage, the current log-odds score `Fm` gets converted back to a probability with the sigmoid (`p = e^Fm / (1 + e^Fm)`, the same function from Day 19), then the residual is `y - p`. This residual is the actual gradient of log loss with respect to `Fm`, so this is a direct generalization of Day 34's "fit the gradient" idea, just computed in probability space instead of raw value space.
+- Each tree is trained as a **regressor** on these residuals, not a classifier, the tree structure only decides *how to group similar-residual samples into leaves*, it doesn't predict a class itself.
+- The leaf value isn't just the mean residual for that leaf. Each terminal node's prediction gets recomputed with a specific formula: `gamma = Σresiduals / Σ[p(1-p)]`. This adjustment corrects for the fact that the residual was computed in probability space but needs to be added back in log-odds space, without it, the update would consistently overshoot or undershoot depending on how confident that leaf's predictions already were.
+- `tree.apply(X)` retrieves which leaf each sample landed in, letting the leaf-specific `gamma` values get computed and injected directly into the tree's own internal `tree_.value` array. This is why `predict_proba()` can later just call `tree.predict(X)` on stored trees, the leaf outputs have already been overwritten with the correct gamma, not the raw mean residual the tree originally learned.
+- `predict_proba()` replays the same accumulation as training: start from `F0`, add every tree's (learning-rate-scaled) leaf prediction, then convert the final `Fm` back to a probability with sigmoid, only at the very last step. The model's internal state never touches probability directly until prediction is actually needed.
+- Tested on `make_circles`, a dataset that isn't linearly separable, the whole point of using depth-5 trees as the base learner here instead of depth-1 stumps, a non-linear class boundary like concentric circles needs each base learner to capture more structure than a single split can.
+
+**Code:** [GBClf.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-35-Gradient-Boosting-Classification/GBClf.ipynb)
+
+---
+
 ## 🛠️ Tech Stack
 `Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute` `Plotly` `mlxtend`
 
