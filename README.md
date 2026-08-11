@@ -46,6 +46,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 33 | AdaBoost | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-33-AdaBoost) |
 | 34 | Gradient Boosting Regression | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-34-Gradient-Boosting-Regression) |
 | 35 | Gradient Boosting Classification | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-35-Gradient-Boosting-Classification) |
+| 35 | XGBooost | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-36-XGBoost) |
 
 ## 📖 Daily Logs
 
@@ -605,13 +606,26 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 
 ---
 
+### Day 36: XGBoost
+**What I learned:**
+- XGBoost is still gradient boosting at its core (Day 34/35's residual-fitting loop), but optimizes the objective differently: sklearn's `GradientBoostingClassifier`/`Regressor` uses only the **first-order gradient** (the residual) to decide each tree's target. XGBoost also uses the **second-order gradient (Hessian)**, giving it more information about the loss surface's curvature at each step, not just its slope, this is closer to a Newton's-method step than plain gradient descent.
+- XGBoost's objective adds an explicit **regularization term** on top of the loss, penalizing both the number of leaves and the magnitude of leaf weights. Sklearn's Gradient Boosting has no equivalent term in its loss, its only real defense against overfitting is external (`max_depth`, `learning_rate`, `n_estimators`), XGBoost bakes regularization directly into what each split is optimizing for.
+- `subsample` and `colsample_bytree` bring Day 30/31's bagging idea (random row/column sampling) directly into boosting, each tree trains on a random subset of rows (`subsample=0.8`) and a random subset of columns (`colsample_bytree=0.8`), reducing correlation between trees the same way it did for Random Forest, but layered on top of boosting's sequential correction instead of parallel independent trees.
+- XGBoost finds split points using a **histogram-based approximation** instead of scanning every possible threshold exactly like sklearn's trees do, this is the main reason it trains faster on the same data, it's solving a very similar problem to sklearn's `GradientBoostingRegressor`/`Classifier`, just with a more efficient (and slightly approximate) split-finding algorithm under the hood.
+- Benchmarked head-to-head against Linear/Logistic Regression, a single Decision Tree, Random Forest, and sklearn's Gradient Boosting, on both a regression task (`make_regression`) and a classification task (`make_moons`), tracking RMSE/MAE/R² and Accuracy/F1/ROC-AUC alongside wall-clock training time for every model.
+- The training-time comparison is the practical payoff of everything above, comparable accuracy/R² to sklearn's Gradient Boosting, in less training time, confirming that XGBoost's engineering choices (histogram splits, regularization, subsampling) translate into a real speed advantage, not just a theoretical one, on the same hyperparameter budget.
+
+**Code:** [xgboost.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-36-XGBoost/xgboost.ipynb)
+
+---
+
 ## 🛠️ Tech Stack
-`Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute` `Plotly` `mlxtend`
+`Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute` `Plotly` `mlxtend` `xgboost`
 
 ## Install Dependency 
 
 ```bash
-pip install numpy pandas matplotlib seaborn scikit-learn pyampute plotly mlxtend
+pip install numpy pandas matplotlib seaborn scikit-learn pyampute plotly mlxtend xgboost
 ```
 
 ## License 
