@@ -46,7 +46,8 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 33 | AdaBoost | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-33-AdaBoost) |
 | 34 | Gradient Boosting Regression | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-34-Gradient-Boosting-Regression) |
 | 35 | Gradient Boosting Classification | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-35-Gradient-Boosting-Classification) |
-| 35 | XGBooost | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-36-XGBoost) |
+| 36 | XGBooost | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-36-XGBoost) |
+| 37 | Stacking Ensemble | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-37-Stacking) |
 
 ## 📖 Daily Logs
 
@@ -616,6 +617,22 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 - The training-time comparison is the practical payoff of everything above, comparable accuracy/R² to sklearn's Gradient Boosting, in less training time, confirming that XGBoost's engineering choices (histogram splits, regularization, subsampling) translate into a real speed advantage, not just a theoretical one, on the same hyperparameter budget.
 
 **Code:** [xgboost.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-36-XGBoost/xgboost.ipynb)
+
+---
+
+### Day 37: Stacking Ensemble
+**What I learned:**
+- Stacking is different from every ensemble so far. Voting (Day 29) combines predictions with a fixed rule (majority vote, average). Bagging/Random Forest (Day 30/31) and Boosting (Day 33-36) combine same-type models through resampling or sequential correction. Stacking trains a **model to learn how to combine other models**, the base models' predictions become the input features for a final "meta-model."
+- The base models don't need to be similar or even related, this notebook mixes Random Forest, Gradient Boosting, and KNN, three algorithms with completely different decision logic, exactly because a meta-model can exploit their differences instead of needing them to agree.
+- The naive approach, train base models on the full training set, then feed their predictions to a meta-model trained on that same set, leaks information. The meta-model would be learning from predictions the base models made on data they'd already memorized, this overfits badly and doesn't reflect how the base models will perform on genuinely unseen data.
+- **K-Fold stacking** fixes this with out-of-fold (OOF) predictions: split training data into K folds, for each fold, train the base model on the other K-1 folds and predict on the held-out fold. Repeating this across all K folds means every training row eventually gets a prediction from a model that never saw it during training, that's what makes the meta-model's training data honest.
+- After OOF predictions are collected for every base model, they get stacked into a new feature matrix (`oof_train_meta`, shape `n_samples × n_models`), and the meta-model (Logistic Regression here) trains directly on that matrix against the real `y_train`, it never sees the original 20 features at all, only what each base model predicted.
+- At test time, the base models get **refit on the entire training set** (not just K-1 folds anymore) before generating predictions on `X_test`, this matters: the OOF trick was only needed to build a leak-free *training set* for the meta-model, at inference time there's no leakage risk, so every bit of training data should be used.
+- **Blending (Hold-Out)** is the simpler, cheaper alternative to K-Fold: split off a validation set once, train base models on the remaining train split, generate meta-features from that one validation set. Faster than K-Fold, but the meta-model only ever learns from a single validation split instead of every training row getting an out-of-fold prediction, less data efficient.
+- `sklearn`'s `StackingClassifier` automates the entire OOF loop behind `cv=5`, `stack_method='predict_proba'` mirrors using `predict_proba()[:, 1]` for the meta-features here instead of hard class labels, giving the meta-model probability information rather than just a 0/1 vote. `passthrough=True` would let the meta-model see the original features *alongside* the base model predictions, this notebook keeps it `False`, so the meta-model learns purely from how the base models' predictions relate to the true label.
+- The from-scratch OOF implementation and `sklearn`'s `StackingClassifier` landed on identical accuracy (89.5%), confirming the manual K-Fold loop correctly reproduces what `sklearn` does internally.
+
+**Code:** [stacking.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-37-Stacking/stacking.ipynb)
 
 ---
 
