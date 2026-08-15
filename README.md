@@ -48,6 +48,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 35 | Gradient Boosting Classification | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-35-Gradient-Boosting-Classification) |
 | 36 | XGBooost | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-36-XGBoost) |
 | 37 | Stacking Ensemble | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-37-Stacking) |
+| 38 | K Means Clustering | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-38-KMeansClustering) |
 
 ## 📖 Daily Logs
 
@@ -633,6 +634,19 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 - The from-scratch OOF implementation and `sklearn`'s `StackingClassifier` landed on identical accuracy (89.5%), confirming the manual K-Fold loop correctly reproduces what `sklearn` does internally.
 
 **Code:** [stacking.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-37-Stacking/stacking.ipynb)
+
+---
+
+### Day 38: K-Means Clustering
+**What I learned:**
+- K-Means is the first **unsupervised** algorithm in this log, everything from Day 1-37 learned from labeled `y`. K-Means gets no labels at all, it only sees `X` and has to discover groupings in the data on its own.
+- The algorithm is a simple repeating loop: pick `K` random points as initial centroids, assign every point to its nearest centroid (Euclidean distance), move each centroid to the mean of the points now assigned to it, repeat until centroids stop moving. This mirrors the E-M-style pattern (assign, then update) seen conceptually in Naive Bayes' iterative feel, except here nothing is probabilistic, it's a hard assignment every round.
+- Choosing `K` isn't learned by the algorithm, it has to be decided beforehand, and the **Elbow Method** is how: run K-Means across a range of `K` values, plot `K` against **WCSS** (Within-Cluster Sum of Squares, `inertia_`, the total squared distance from every point to its own centroid), and pick the `K` where the curve stops dropping sharply and starts to flatten, the "elbow." Past that point, adding more clusters keeps reducing WCSS only marginally, since you're just subdividing already-tight clusters rather than capturing real structure.
+- WCSS mechanically always decreases as `K` increases (more centroids can only reduce or match total distance, never increase it), which is exactly why picking `K` by "lowest WCSS" alone doesn't work, at `K = n_samples` WCSS hits zero trivially. The elbow is about finding the point of diminishing returns, not the minimum.
+- On `make_blobs` with 4 well-separated clusters, the elbow curve clearly bent at `K=4`, matching the true number of centroids the data was generated from, a clean confirmation that the elbow method recovers the right number of clusters when they're genuinely well-separated.
+- Built a from-scratch version (`MyKMean`) mirroring the exact same loop: random centroid initialization, `assign_clusters` (nearest centroid by Euclidean distance), `move_centroids` (mean of each group), and a stopping condition that breaks once centroids stop changing between iterations.
+
+**Code:** [kmeans.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-38-KMeansClustering/kmeans.ipynb)
 
 ---
 
