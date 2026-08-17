@@ -49,7 +49,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 36 | XGBooost | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-36-XGBoost) |
 | 37 | Stacking Ensemble | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-37-Stacking) |
 | 38 | K Means Clustering | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-38-KMeansClustering) |
-| 38 | Hierarchical Clustering | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-39-agglomerative_clustering) |
+| 39 | Hierarchical Clustering | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-39-Hierachical-Clustering) |
 
 ## 📖 Daily Logs
 
