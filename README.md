@@ -49,6 +49,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 36 | XGBooost | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-36-XGBoost) |
 | 37 | Stacking Ensemble | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-37-Stacking) |
 | 38 | K Means Clustering | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-38-KMeansClustering) |
+| 38 | Hierarchical Clustering | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-39-agglomerative_clustering) |
 
 ## 📖 Daily Logs
 
@@ -647,6 +648,24 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 - Built a from-scratch version (`MyKMean`) mirroring the exact same loop: random centroid initialization, `assign_clusters` (nearest centroid by Euclidean distance), `move_centroids` (mean of each group), and a stopping condition that breaks once centroids stop changing between iterations.
 
 **Code:** [kmeans.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-38-KMeansClustering/kmeans.ipynb)
+
+---
+
+### Day 39: Agglomerative Clustering
+**What I learned:**
+- Agglomerative Clustering takes the opposite approach from K-Means. K-Means (Day 38) starts by guessing `K` centroids and iteratively reassigns points. Agglomerative Clustering starts with **every single point as its own cluster**, then repeatedly merges the two closest clusters together, one merge at a time, until only one cluster remains. It's "bottom-up" hierarchy building, no centroid guessing, no reassignment loop, no random initialization to worry about.
+- The core loop at every step: compute the distance between every pair of *current* clusters, find the closest pair, merge them into one cluster, repeat. With `n` starting points, this takes exactly `n-1` merges to collapse everything into a single cluster, and every one of those merges gets recorded, that record is what becomes the dendrogram.
+- Since a cluster can contain multiple points after the first merge, "distance between two clusters" isn't as simple as Euclidean distance between two points anymore, this is where **linkage** comes in, it defines how cluster-to-cluster distance actually gets measured:
+  - **Ward linkage** (used here) merges whichever pair of clusters causes the *smallest increase* in total within-cluster variance, this tends to produce compact, evenly-sized clusters and is usually the default choice.
+  - **Single linkage** measures the distance between the *closest* pair of points across two clusters, this can chain clusters together through a thin trail of nearby points, sometimes producing long, straggly clusters.
+  - **Complete linkage** measures the distance between the *farthest* pair of points across two clusters, forcing clusters to stay tight and compact since even one distant point can block a merge.
+  - **Average linkage** takes the mean distance across all point pairs between two clusters, a middle ground between single and complete.
+- The **dendrogram** is a tree diagram of that entire merge history, the x-axis lists individual data points, the y-axis is the distance at which each merge happened. Two points/clusters that merge low on the dendrogram were very close together, merges near the top only happen once there's nothing closer left to combine, they're stitching together genuinely dissimilar groups just to reach one final cluster.
+- This is what makes Agglomerative Clustering not need `K` upfront the way K-Means does, the whole hierarchy gets built regardless, deciding the number of clusters becomes a matter of reading the dendrogram after the fact: draw a horizontal cut line across it, and the number of vertical lines that line crosses is the resulting cluster count at that distance threshold. A good cut point is usually where there's the *biggest vertical gap* with no horizontal merge line running through it, since that gap represents a jump to merging clusters that were relatively far apart.
+- `AgglomerativeClustering(n_clusters=3, ...)` in sklearn effectively runs this whole merge process internally, then cuts the resulting tree at whatever height produces exactly 3 clusters, `n_clusters` here is really just picking the cut point on the dendrogram, not changing how the merging itself works.
+- Because pairwise distances between every cluster have to get recomputed at every merge step, Agglomerative Clustering scales much worse than K-Means on large datasets, K-Means dataset size roughly scales linearly per iteration, Agglomerative Clustering's distance matrix computation is closer to quadratic in the number of points, making it a better fit for smaller datasets where the dendrogram's interpretability is worth the extra compute cost.
+
+**Code:** [agglomerative_clustering.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-39-Hierachical-Clustering/agglomerative_clustering.ipynb)
 
 ---
 
