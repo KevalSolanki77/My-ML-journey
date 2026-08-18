@@ -50,6 +50,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 37 | Stacking Ensemble | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-37-Stacking) |
 | 38 | K Means Clustering | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-38-KMeansClustering) |
 | 39 | Hierarchical Clustering | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-39-Hierachical-Clustering) |
+| 40 | DBSCAN | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-40-DBSCAN) |
 
 ## 📖 Daily Logs
 
@@ -666,6 +667,24 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 - Because pairwise distances between every cluster have to get recomputed at every merge step, Agglomerative Clustering scales much worse than K-Means on large datasets, K-Means dataset size roughly scales linearly per iteration, Agglomerative Clustering's distance matrix computation is closer to quadratic in the number of points, making it a better fit for smaller datasets where the dendrogram's interpretability is worth the extra compute cost.
 
 **Code:** [agglomerative_clustering.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-39-Hierachical-Clustering/agglomerative_clustering.ipynb)
+
+---
+
+### Day 40: DBSCAN
+**What I learned:**
+- DBSCAN clusters based on **density**, not distance-to-centroid (K-Means, Day 38) or nearest-cluster-merging (Agglomerative, Day 39). A cluster is just a region where points are packed closely enough together, with no assumption about the shape that region has to take.
+- Two parameters define "densely packed": `eps` (ε), the radius around a point to search for neighbors, and `min_samples`, how many neighbors (including the point itself) have to fall inside that radius for the point to count as sitting in a dense region.
+- Every point gets classified into exactly one of three types:
+  - **Core point**: has at least `min_samples` points within its `eps`-neighborhood, this point is definitely inside a cluster.
+  - **Border point**: doesn't have enough neighbors to be core on its own, but sits within `eps` distance of a core point, it gets pulled into that core point's cluster, but doesn't help extend the cluster further.
+  - **Noise point**: neither core nor border, isolated enough that it doesn't belong to any cluster, labeled `-1` in sklearn. This is a built-in outlier detector, K-Means and Agglomerative force *every* point into some cluster no matter how far it sits from everything else, DBSCAN doesn't.
+- The clustering process itself is about connectivity, not iteration: find every core point, connect any two core points that fall inside each other's `eps`-neighborhood into the same cluster (this chaining is what lets a cluster take on a long, curved, non-convex shape), then attach border points to whichever core point they're near, whatever's left over becomes noise.
+- This connectivity-based growth, rather than measuring distance to a single centroid, is exactly why DBSCAN handles `make_moons` and `make_circles` correctly. A centroid sitting at the center of a moon or a ring is meaningless, K-Means, which only knows how to draw a boundary around a single centroid, cuts straight through these shapes and gets it wrong every time regardless of `k`. DBSCAN just needs one moon/ring to be internally dense and separated by low-density space from the other, no assumption about a "center" required.
+- Feature scaling matters here for the same reason it mattered for KNN (Day 25) and SVM (Day 26), `eps` is a literal distance threshold, so features on different scales distort what "close" even means before DBSCAN even starts. `StandardScaler` runs on all three synthetic datasets before fitting.
+- DBSCAN's real limitation shows up on the "Multi-Density Blobs" dataset: a single global `eps` assumes every cluster has roughly the same density. A tight cluster and a spread-out cluster in the same dataset can't both be captured correctly with one `eps` value, whatever radius correctly separates the dense cluster will either swallow the sparse one's noise or fragment it, since DBSCAN has no per-cluster density adjustment built in.
+- Compared side-by-side against K-Means on all three datasets (circles, moons, multi-density blobs), the direct payoff of this whole density-based approach: DBSCAN gets circles/moons visually correct where K-Means fundamentally can't, but K-Means still wins cleanly on the blobs, since blobs are exactly the roughly-equal-density, convex-shaped clusters K-Means was built for.
+
+**Code:** [dbscan.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-40-DBSCAN/dbscan.ipynb)
 
 ---
 
