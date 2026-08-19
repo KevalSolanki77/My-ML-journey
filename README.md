@@ -51,6 +51,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 38 | K Means Clustering | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-38-KMeansClustering) |
 | 39 | Hierarchical Clustering | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-39-Hierachical-Clustering) |
 | 40 | DBSCAN | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-40-DBSCAN) |
+| 41 | Imbalanced Data | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-41-Imbalanced-Data) |
 
 ## 📖 Daily Logs
 
@@ -688,13 +689,29 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 
 ---
 
+### Day 41: Handling Imbalanced Data
+**What I learned:**
+- Imbalanced data is when one class vastly outnumbers another (here, 25 vs 375 samples), this breaks two things at once: the model gets biased toward predicting the majority class since that's what minimizes overall error, and standard metrics like accuracy become misleading, a model that always predicts the majority class can still score 93%+ accuracy while never correctly catching a single minority case.
+- Baseline Logistic Regression on the raw imbalanced data confirmed this directly, high accuracy, but poor recall/precision on the minority class, and a decision boundary that visibly favors the majority class's region.
+- **Random Undersampling** fixes the imbalance by removing majority-class samples until both classes are equal size. Simple and fast, but throws away real data, information contained in the removed majority samples is just gone, which can hurt the model's ability to learn the majority class's true boundary, especially with small datasets.
+- **Random Oversampling** does the opposite, duplicates existing minority-class samples until both classes are equal size. No data gets discarded, but since it's literally copying the same points, it doesn't add any new information either, it just makes the model see the same minority examples more times, which risks overfitting to those exact points.
+- **SMOTE** (Synthetic Minority Oversampling Technique) improves on plain oversampling by generating *synthetic* minority samples instead of duplicating real ones, it picks a minority point, finds its nearest minority neighbors, and creates a new synthetic point somewhere along the line between them. This gives the model genuinely new (if artificial) minority examples to learn from, rather than repeating identical points.
+- **Balanced Random Forest** builds the resampling directly into the ensemble instead of resampling the dataset once upfront, each tree in the forest trains on its own separately undersampled bootstrap sample, balanced independently per tree, this lets every tree see a different balanced view rather than the whole forest training on one fixed resampled set.
+- **Class weights** take a completely different approach, no resampling at all, instead the loss function itself gets modified so misclassifying the minority class costs more than misclassifying the majority class. `class_weight={0:50, 1:1}` tells the model a false prediction on class 0 is 50x more costly, forcing it to work harder to get class 0 right even though it sees far fewer examples of it.
+- **Custom loss function** (with raw XGBoost's `obj=custom_loss`) is the most manual version of the same class-weighting idea, directly modifying the gradient and Hessian used in each boosting step (Day 34-36) so that false negatives and false positives get different penalty weights (`false_negative_penalty=1.0` vs `false_positive_penalty=10`) baked directly into the math of every tree's residual-fitting step, rather than relying on a `class_weight` parameter sklearn provides for you.
+- All six approaches solve the same underlying problem from a different angle: undersampling and oversampling change *what data* the model sees, class weights and custom loss functions change *how much each mistake costs* during training, and Balanced Random Forest builds the data-level fix into the ensemble's own resampling process rather than doing it once upfront.
+
+**Code:** [imbalanced_data.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-41-Imbalanced-Data/imbalanced_data.ipynb)
+
+---
+
 ## 🛠️ Tech Stack
-`Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute` `Plotly` `mlxtend` `xgboost`
+`Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute` `Plotly` `mlxtend` `xgboost` `Imbalanced-learn`
 
 ## Install Dependency 
 
 ```bash
-pip install numpy pandas matplotlib seaborn scikit-learn pyampute plotly mlxtend xgboost
+pip install numpy pandas matplotlib seaborn scikit-learn pyampute plotly mlxtend xgboost imbalanced-learn
 ```
 
 ## License 
