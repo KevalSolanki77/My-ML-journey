@@ -52,6 +52,7 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 | 39 | Hierarchical Clustering | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-39-Hierachical-Clustering) |
 | 40 | DBSCAN | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-40-DBSCAN) |
 | 41 | Imbalanced Data | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-41-Imbalanced-Data) |
+| 42 | Optuna | ✅ | [Link](https://github.com/KevalSolanki77/My-ML-journey/tree/main/Day-42-Optuna) |
 
 ## 📖 Daily Logs
 
@@ -705,13 +706,28 @@ Documenting my day-by-day progress as I learn ML — concepts, code, and mistake
 
 ---
 
+### Day 42: Hyperparameter Tuning with Optuna
+**What I learned:**
+- `GridSearchCV`/`RandomizedSearchCV` (used throughout Days 27-36) either try every combination exhaustively or sample randomly, with no memory of which combinations already worked well. Optuna tunes smarter, it uses the results of previous trials to decide what to try next, converging toward good hyperparameters faster than brute-force search.
+- The vocabulary maps directly onto what `GridSearchCV` does implicitly: a **Study** is the whole optimization session (equivalent to one `GridSearchCV` run), a **Trial** is one single hyperparameter combination being tested (equivalent to one point in the grid), and the **Objective Function** is what gets evaluated per trial and optimized, here, 3-fold CV accuracy, the same metric `GridSearchCV` would score internally.
+- The real difference from Grid/RandomizedSearchCV is the **Sampler**, the algorithm deciding which hyperparameters to try next. `RandomSampler` picks randomly every time (equivalent to `RandomizedSearchCV`), `GridSampler` covers a fixed grid exhaustively (equivalent to `GridSearchCV`), but the default, **TPESampler** (Tree-structured Parzen Estimator), actually learns from past trials, it builds a probability model of "what hyperparameter regions produced good scores so far" and biases future trials toward those regions instead of guessing blindly.
+- Hyperparameters get defined inside the objective function itself using `trial.suggest_*` calls (`suggest_int`, `suggest_float`, `suggest_categorical`), rather than passed in as a fixed grid/distribution upfront like `GridSearchCV`'s `param_grid`, this is what lets Optuna's sampler choose values dynamically per trial based on what it's learned, instead of committing to a static search space from the start.
+- `trial.suggest_float('C', 0.1, 100, log=True)` uses **log-scale sampling** for parameters like SVM's `C`, spreading trials evenly across orders of magnitude (0.1, 1, 10, 100) instead of linearly, this matters because a parameter like `C` behaves very differently between 0.1 and 1 than it does between 50 and 100, log-scale sampling explores the meaningful range more efficiently.
+- Optuna can tune **across different model types in one study**, using `trial.suggest_categorical('classifier', ['SVM', 'RandomForest', 'GradientBoosting'])` to let the sampler pick the algorithm itself as a hyperparameter, then branch into that algorithm's own specific hyperparameters inside the same objective function, this isn't something `GridSearchCV` does in a single search, it would need three separate grid searches, one per model.
+- Built-in visualizations turn the tuning process itself into something inspectable: `plot_optimization_history` shows whether scores are actually improving trial-over-trial, `plot_param_importances` shows which hyperparameters actually mattered for the final score (some tuned parameters might barely move the needle), and `plot_parallel_coordinate`/`plot_contour` show how combinations of parameters interact, insight `GridSearchCV`'s flat `.best_params_` output doesn't give you directly.
+- After the multi-model study finished, grouping `trials_dataframe()` by `params_classifier` and averaging `value` (accuracy) directly compared how well each algorithm performed *on average* across all its sampled trials, not just its single best trial, a way to see which model family was more consistently strong for this dataset overall.
+
+**Code:** [optuna.ipynb](https://github.com/KevalSolanki77/My-ML-journey/blob/main/Day-42-Optuna/optuna.ipynb)
+
+---
+
 ## 🛠️ Tech Stack
-`Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute` `Plotly` `mlxtend` `xgboost` `Imbalanced-learn`
+`Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` `Scikit-learn` `Pyampute` `Plotly` `mlxtend` `xgboost` `Imbalanced-learn` `Optuna` `nbformat`
 
 ## Install Dependency 
 
 ```bash
-pip install numpy pandas matplotlib seaborn scikit-learn pyampute plotly mlxtend xgboost imbalanced-learn
+pip install numpy pandas matplotlib seaborn scikit-learn pyampute plotly mlxtend xgboost imbalanced-learn optuna nbformat
 ```
 
 ## License 
